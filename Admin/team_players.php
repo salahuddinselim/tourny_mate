@@ -44,11 +44,11 @@ if ($selected_team) {
     try {
         $players_query = $conn->prepare("SELECT 
             tp.id as player_id, 
-            c.full_name, 
+            u.fullName as full_name, 
             t.name as team_name, 
             tp.created_at
         FROM team_player tp
-        JOIN contact c ON tp.user_id = c.id
+        JOIN userinfo u ON tp.user_id = u.id
         JOIN team t ON tp.team_id = t.id
         WHERE t.id = :team_id");
         $players_query->bindParam(':team_id', $selected_team, PDO::PARAM_INT);

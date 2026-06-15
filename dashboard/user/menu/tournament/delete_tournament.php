@@ -1,34 +1,44 @@
 <?php
+session_start();
 require_once '../../../../config.php';
+
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ../../../../login-form.php");
+    exit();
+}
 
 $tournamentId = $_GET['tournament_id'] ?? null;
 
 if ($tournamentId) {
-    try {
-        // Delete related records from `tournament_team` and `tournament_official`
-        $query = "DELETE FROM tournament_team WHERE tournament_id = :tournament_id";
-        $stmt = $conn->prepare($query);
-        $stmt->bindParam(':tournament_id', $tournamentId, PDO::PARAM_INT);
-        $stmt->execute();
+    $stmt = $conn->prepare("SELECT creator_id FROM tournament WHERE id = :id");
+    $stmt->execute([':id' => $tournamentId]);
+    $tournament = $stmt->fetch();
 
-        $query = "DELETE FROM tournament_officials WHERE tournament_id = :tournament_id";
-        $stmt = $conn->prepare($query);
-        $stmt->bindParam(':tournament_id', $tournamentId, PDO::PARAM_INT);
-        $stmt->execute();
-
-        // Delete the tournament itself
-        $query = "DELETE FROM tournament WHERE id = :tournament_id";
-        $stmt = $conn->prepare($query);
-        $stmt->bindParam(':tournament_id', $tournamentId, PDO::PARAM_INT);
-        $stmt->execute();
-
-        header("Location: tournament_organizer.php?success=1");
+    if (!$tournament || $tournament['creator_id'] != $_SESSION['user_id']) {
+        header("Location: tournament_organizer.php?error=unauthorized");
         exit();
-    } catch (PDOException $e) {
-        echo "Error: " . $e->getMessage();
     }
-} else {
-    header("Location: tournament_organizer.php?error=1");
+
+    try {
+        $conn->beginTransaction();
+
+        $conn->prepare("DELETE FROM tournament_team WHERE tournament_id = :tid")->execute([':tid' => $tournamentId]);
+        $conn->prepare("DELETE FROM tournament_officials WHERE tournament_id = :tid")->execute([':tid' => $tournamentId]);
+        $conn->prepare("DELETE FROM tournament_request WHERE tournament_id = :tid")->execute([':tid' => $tournamentId]);
+        $conn->prepare("DELETE FROM match_played WHERE tournament_id = :tid")->execute([':tid' => $tournamentId]);
+        $conn->prepare("DELETE FROM tournament_team_score WHERE tournament_id = :tid")->execute([':tid' => $tournamentId]);
+        $conn->prepare("DELETE FROM tournament WHERE id = :tid AND creator_id = :uid")->execute([':tid' => $tournamentId, ':uid' => $_SESSION['user_id']]);
+
+        $conn->commit();
+        header("Location: tournament_organizer.php?success=1");
+    } catch (PDOException $e) {
+        $conn->rollBack();
+        error_log("Delete tournament error: " . $e->getMessage());
+        header("Location: tournament_organizer.php?error=delete_failed");
+    }
     exit();
 }
+
+header("Location: tournament_organizer.php?error=1");
+exit();
 ?>

@@ -7,11 +7,6 @@ if ($conn === null) {
     die("Connection failed: Unable to connect to database");
 }
 
-// Enable error reporting for debugging
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
-// Check if the form is submitted via POST method
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Sanitize and validate input
     $name = isset($_POST['name']) ? trim($_POST['name']) : '';
@@ -67,8 +62,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         error_log("Contact form submission error: " . $e->getMessage());
         error_log("Full exception: " . print_r($e, true));
         
-        // Detailed error for debugging
-        die("Database error: " . $e->getMessage());
+        error_log("Database error: " . $e->getMessage());
+        header('Location: contact.php?error=Unable to send message. Please try again.');
+        exit();
     }
 
     exit();

@@ -1,6 +1,6 @@
 <footer class="footer bg-dark text-light mt-5">
     <div class="container text-center py-3">
-        <p>Copyright &copy; Battle Base</a></p>
+        <p>Copyright &copy; BattleBase</p>
         <p class="mb-0">
             Contact Us:
             <a href="mailto:demo@gmail.com" class="text-warning">demo@gmail.com</a>

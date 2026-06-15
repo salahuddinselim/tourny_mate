@@ -25,18 +25,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt->execute();
             $admin = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            // Verify password 
-            if ($admin && $admin_password === $admin['pass_key']) {
-                // Successful login
-                $_SESSION['admin_logged_in'] = true;
-                $_SESSION['admin_username'] = $admin_username;
-                $_SESSION['admin_id'] = $admin['id'];
+            if ($admin) {
+                $passwordValid = false;
 
-                // Regenerate session ID for security
-                session_regenerate_id(true);
+                if (password_verify($admin_password, $admin['pass_key'])) {
+                    $passwordValid = true;
+                } elseif ($admin_password === $admin['pass_key']) {
+                    $passwordValid = true;
+                    $hash = password_hash($admin_password, PASSWORD_DEFAULT);
+                    $updateStmt = $conn->prepare("UPDATE admin SET pass_key = :hash WHERE id = :id");
+                    $updateStmt->execute([':hash' => $hash, ':id' => $admin['id']]);
+                }
 
-                header("Location: admin_dashboard.php");
-                exit();
+                if ($passwordValid) {
+                    $_SESSION['admin_logged_in'] = true;
+                    $_SESSION['admin_username'] = $admin_username;
+                    $_SESSION['admin_id'] = $admin['id'];
+
+                    session_regenerate_id(true);
+
+                    header("Location: admin_dashboard.php");
+                    exit();
+                } else {
+                    $error_message = "Invalid username or password.";
+                }
             } else {
                 $error_message = "Invalid username or password.";
             }

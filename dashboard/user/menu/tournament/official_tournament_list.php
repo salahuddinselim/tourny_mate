@@ -26,12 +26,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $tournamentId = $_POST['tournament_id'] ?? null;
   $score = $_POST['score'] ?? '';
 
-  if (empty($tournamentId) || empty($score)) {
+  if (empty($tournamentId) || $score === '') {
     $errors[] = "Tournament ID and Score are required.";
   } else {
     try {
       $query = "
-                UPDATE tournament_team
+                UPDATE tournament_team_score
                 SET score = :score
                 WHERE tournament_id = :tournament_id";
       $stmt = $conn->prepare($query);
@@ -43,6 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       exit();
     } catch (PDOException $e) {
       $errors[] = "Database error: " . $e->getMessage();
+      error_log("Official score update error: " . $e->getMessage());
     }
   }
 }

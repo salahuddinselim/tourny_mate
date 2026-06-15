@@ -2,41 +2,38 @@
 session_start();
 require_once 'config.php';
 
-// Check if user is logged in
-if (!isset($_SESSION['username'])) {
-    header("Location: login.php");
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login-form.php");
     exit();
 }
 
-// Fetch user details using username
-$username = $_SESSION['username'];
-$stmt = $conn->prepare("SELECT * FROM users WHERE username = :username");
-$stmt->execute([':username' => $username]);
+$userId = $_SESSION['user_id'];
+$stmt = $conn->prepare("SELECT * FROM userinfo WHERE id = :id");
+$stmt->execute([':id' => $userId]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$user) {
     $_SESSION['error_message'] = "User not found. Please log in again.";
-    header("Location: login.php");
+    header("Location: login-form.php");
     exit();
 }
 
-// Functions
-function editProfile($username, $data) {
+function editProfile($userId, $data) {
     global $conn;
-    $stmt = $conn->prepare("UPDATE users SET fullname = :fullname, email = :email, phone = :phone WHERE username = :username");
+    $stmt = $conn->prepare("UPDATE userinfo SET fullName = :fullName, email = :email, phone = :phone WHERE id = :id");
     $stmt->execute([
-        ':fullname' => $data['fullname'],
+        ':fullName' => $data['fullname'],
         ':email' => $data['email'],
         ':phone' => $data['phone'],
-        ':username' => $username,
+        ':id' => $userId,
     ]);
 
     if ($stmt->rowCount() > 0) {
         $_SESSION['success_message'] = "Profile updated successfully!";
         return true;
     } else {
-        $_SESSION['error_message'] = "Failed to update profile.";
-        return false;
+        $_SESSION['success_message'] = "No changes were needed.";
+        return true;
     }
 }
 

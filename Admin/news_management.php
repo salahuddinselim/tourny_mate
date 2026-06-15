@@ -35,15 +35,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create_news'])) {
         $image_2 = !empty($_FILES['image_2']['name']) ? $_FILES['image_2']['name'] : null;
         $image_3 = !empty($_FILES['image_3']['name']) ? $_FILES['image_3']['name'] : null;
 
-        // Upload directory
-        $upload_dir = 'uploads/news/';
+        $upload_dir = '../uploads/news/';
         if (!is_dir($upload_dir)) mkdir($upload_dir, 0755, true);
 
-        // Move uploaded files
-        if ($main_image) move_uploaded_file($_FILES['main_image']['tmp_name'], $upload_dir . $main_image);
-        if ($image_1) move_uploaded_file($_FILES['image_1']['tmp_name'], $upload_dir . $image_1);
-        if ($image_2) move_uploaded_file($_FILES['image_2']['tmp_name'], $upload_dir . $image_2);
-        if ($image_3) move_uploaded_file($_FILES['image_3']['tmp_name'], $upload_dir . $image_3);
+        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        $files = ['main_image' => &$main_image, 'image_1' => &$image_1, 'image_2' => &$image_2, 'image_3' => &$image_3];
+
+        foreach ($files as $field => &$filename) {
+            if ($filename) {
+                $fInfo = $_FILES[$field];
+                if (!in_array($fInfo['type'], $allowedTypes)) {
+                    throw new Exception("Invalid file type for $field. Only images allowed.");
+                }
+                if ($fInfo['size'] > 5 * 1024 * 1024) {
+                    throw new Exception("File too large for $field. Max 5MB.");
+                }
+                $ext = pathinfo($filename, PATHINFO_EXTENSION);
+                $newName = time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
+                move_uploaded_file($fInfo['tmp_name'], $upload_dir . $newName);
+                $filename = $newName;
+            }
+        }
+        unset($filename);
 
         // Insert news
         $insert_stmt = $conn->prepare("
@@ -82,9 +95,9 @@ try {
             n.image_2, 
             n.image_3, 
             n.created_at, 
-            c.full_name as posted_by 
+            u.fullName as posted_by 
         FROM news n
-        LEFT JOIN contact c ON n.user_id = c.id
+        LEFT JOIN userinfo u ON n.user_id = u.id
         ORDER BY n.created_at DESC
     ");
 
@@ -160,7 +173,7 @@ try {
                             <div class="col-md-6 mb-4">
                                 <div class="card news-card">
                                     <?php if ($article['main_image']): ?>
-                                        <img src="<?php echo $article['main_image'] ? '/tourny_mate/uploads/news/' . htmlspecialchars($article['main_image']) : 'https://img.freepik.com/free-vector/people-showcasing-different-types-ways-access-news_53876-66059.jpg?t=st=1737928295~exp=1737931895~hmac=b992b86a17edf2e14becf19e2873ca1fc1387e4a19a04e98947006720ed9af63&w=740'; ?>" 
+                                        <img src="../uploads/news/<?php echo htmlspecialchars($article['main_image']); ?>" 
                                              class="card-img-top news-image" 
                                              alt="News Main Image">
                                     <?php endif; ?>

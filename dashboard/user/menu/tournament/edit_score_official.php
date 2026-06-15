@@ -23,6 +23,8 @@ try {
             mp.id AS match_id,
             mp.match_day,
             mp.match_type,
+            mp.team_1_id,
+            mp.team_2_id,
             t1.name AS team_1_name,
             t2.name AS team_2_name,
             s.team_1_score,
@@ -54,12 +56,12 @@ try {
         $placeholders = implode(',', array_fill(0, count($teamIds), '?'));
         $playerQuery = "
             SELECT 
-                p.id AS player_id,
-                p.team_id,
+                tp.user_id AS player_id,
+                tp.team_id,
                 u.fullName AS player_name
-            FROM player p
-            JOIN userinfo u ON p.user_id = u.id
-            WHERE p.team_id IN ($placeholders)";
+            FROM team_player tp
+            JOIN userinfo u ON tp.user_id = u.id
+            WHERE tp.team_id IN ($placeholders)";
         $stmt = $conn->prepare($playerQuery);
         $stmt->execute($teamIds);
         $teamPlayers = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -99,10 +101,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $wickets = $scores['wickets'] ?? 0;
 
                 $updatePlayerQuery = "
-                    INSERT INTO individual_score (match_id, user_id, odi_runs, total_wickets)
+                    INSERT INTO individual_score (match_id, user_id, runs, total_wickets)
                     VALUES (:match_id, :user_id, :runs, :wickets)
                     ON DUPLICATE KEY UPDATE 
-                    odi_runs = :runs,
+                    runs = :runs,
                     total_wickets = :wickets";
                 $stmt = $conn->prepare($updatePlayerQuery);
                 $stmt->execute([

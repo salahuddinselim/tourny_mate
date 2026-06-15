@@ -1,11 +1,26 @@
 <?php
+session_start();
 require_once '../../../../config.php';
+
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ../../../../login-form.php");
+    exit();
+}
+
 include '../../../../components/shared/user-header.php';
 
 $teamId = $_GET['team_id'] ?? null;
 $errors = [];
 
-// Fetch available users for selection (users not assigned to any team)
+$stmt = $conn->prepare("SELECT manager_id FROM team WHERE id = :team_id");
+$stmt->execute([':team_id' => $teamId]);
+$team = $stmt->fetch();
+
+if (!$team || $team['manager_id'] != $_SESSION['user_id']) {
+    header("Location: my_team.php?error=unauthorized");
+    exit();
+}
+
 $users = [];
 $query = "
     SELECT id, fullName, email 

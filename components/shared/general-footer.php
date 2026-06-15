@@ -1,100 +1,55 @@
-<footer class="bg-dark text-white py-5">
-   <div class="container">
-      <div class="row">
-         <div class="col-lg-4 col-md-6 text-center">
-            <h5 class="font-weight-bold mb-3">About BATTLE BASE</h5>
-            <p class="about-text">Your one-stop destination for all sports updates, scores, and match schedules.</p>
-         </div>
-         <div class="col-lg-4 col-md-6 text-center">
-            <h5 class="font-weight-bold mb-3">Quick Links</h5>
-            <ul class="list-unstyled">
-               <li><a href="about.php" class="text-white footer-link">About Us</a></li>
-               <li><a href="team.php" class="text-white footer-link">Our Team</a></li>
-               <li><a href="news.php" class="text-white footer-link">Latest News</a></li>
-               <li><a href="contact.php" class="text-white footer-link">Contact Us</a></li>
-            </ul>
-         </div>
-         <div class="col-lg-4 col-md-12 text-center">
-            <h5 class="font-weight-bold mb-3">Follow Us</h5>
-            <ul class="list-inline">
-               <li class="list-inline-item"><a href="https://www.facebook.com/" class="text-white social-icon" aria-label="Visit our Facebook page"><i class="fab fa-facebook"></i></a></li>
-               <li class="list-inline-item"><a href="https://www.twitter.com/" class="text-white social-icon" aria-label="Visit our Twitter profile"><i class="fab fa-twitter"></i></a></li>
-               <li class="list-inline-item"><a href="https://www.instagram.com/" class="text-white social-icon" aria-label="Visit our Instagram profile"><i class="fab fa-instagram"></i></a></li>
-               <li class="list-inline-item"><a href="https://www.youtube.com/" class="text-white social-icon" aria-label="Visit our YouTube channel"><i class="fab fa-youtube"></i></a></li>
-            </ul>
-         </div>
+<footer class="footer-battle">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-4">
+        <h5><i class="fas fa-trophy me-2"></i>BattleBase</h5>
+        <p style="color:var(--text-muted);font-size:.88rem;line-height:1.7;margin-bottom:1.25rem;">
+          Where champions rise. The ultimate platform for tournament management, 
+          live scores, and sports community.
+        </p>
+        <div>
+          <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="social"><i class="fab fa-twitter"></i></a>
+          <a href="#" class="social"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="social"><i class="fab fa-youtube"></i></a>
+        </div>
       </div>
-      <div class="text-center mt-4">
-         <p class="copyright-text">Copyright &copy; <script>
-               document.write(new Date().getFullYear());
-            </script> <span class="font-weight-bold">Battle Base</span>. All rights reserved.</p>
+      <div class="col-md-2">
+        <h5>Links</h5>
+        <ul class="list-unstyled" style="line-height:2.2">
+          <li><a href="index.php">Home</a></li>
+          <li><a href="allScores.php">Scores</a></li>
+          <li><a href="allTournaments.php">Tournaments</a></li>
+          <li><a href="news.php">News</a></li>
+          <li><a href="highlights.php">Highlights</a></li>
+        </ul>
       </div>
-   </div>
+      <div class="col-md-3">
+        <h5>Support</h5>
+        <ul class="list-unstyled" style="line-height:2.2">
+          <li><a href="contact.php">Contact Us</a></li>
+          <li><a href="mailto:support@battlebase.com">support@battlebase.com</a></li>
+          <li><span style="color:var(--text-muted);font-size:.88rem;"><i class="fas fa-phone me-1"></i> +1 (555) 123-4567</span></li>
+        </ul>
+      </div>
+      <div class="col-md-3">
+        <h5>Newsletter</h5>
+        <p style="color:var(--text-muted);font-size:.85rem;">Get the latest updates straight to your inbox.</p>
+        <div class="input-group">
+          <input type="email" class="form-control" placeholder="Email" style="background:var(--bg-primary);border:1px solid var(--border-color);color:var(--text-primary);border-radius:var(--radius-sm) 0 0 var(--radius-sm);font-size:.85rem;">
+          <button class="btn-battle" style="border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:.45rem 1rem;font-size:.8rem;"><i class="fas fa-paper-plane"></i></button>
+        </div>
+      </div>
+    </div>
+    <div class="cpy">
+      &copy; <?= date('Y'); ?> BattleBase. All rights reserved.
+    </div>
+  </div>
 </footer>
 
-<style>
-   .bg-dark {
-      background-color: #222;
-   }
-
-   .footer-link {
-      text-decoration: none;
-      transition: color 0.3s ease;
-   }
-
-   .footer-link:hover {
-      color: #f8c146;
-   }
-
-   .social-icon {
-      font-size: 1.5rem;
-      margin: 0 10px;
-      transition: transform 0.3s ease, color 0.3s ease;
-   }
-
-   .social-icon:hover {
-      transform: scale(1.2);
-      color: #f8c146;
-   }
-
-   .about-text {
-      color: #ffffff;
-      font-size: 16px;
-      background-color: rgba(0, 0, 0, 0.6);
-      padding: 10px;
-      border-radius: 5px;
-   }
-
-   .copyright-text {
-      color: #ffffff;
-      font-size: 14px;
-   }
-
-   .col-lg-4 {
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-   }
-
-   h5 {
-      font-size: 1.25rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-   }
-</style>
-
-<!-- JS Scripts -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-   // Preloader Fade-Out Animation
-   window.addEventListener("load", function() {
-      document.body.classList.add("loaded");
-   });
+window.addEventListener('load', () => document.body.classList.add('loaded'));
 </script>
-
 </body>
-
-</php>
+</html>

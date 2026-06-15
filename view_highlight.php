@@ -1,9 +1,4 @@
 <?php
-// Enable error reporting for debugging
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
-// Include database connection
 require_once 'config.php';
 include './components/shared/general-header.php';
 

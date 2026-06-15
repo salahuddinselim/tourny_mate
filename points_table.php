@@ -3,14 +3,18 @@ require_once 'config.php';
 
 $tournamentId = $_GET['tournament_id'] ?? null;
 $errors = [];
+$tournament = null;
 
-// Fetch tournament details
 if ($tournamentId) {
   $query = "SELECT * FROM tournament WHERE id = :tournament_id";
   $stmt = $conn->prepare($query);
   $stmt->bindParam(':tournament_id', $tournamentId, PDO::PARAM_INT);
   $stmt->execute();
   $tournament = $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+if (!$tournament) {
+  $tournament = ['name' => 'Unknown Tournament', 'venue' => 'N/A', 'start_date' => 'N/A', 'end_date' => 'N/A', 'tour_type' => 'cricket'];
 }
 
 // Fetch existing teams in the tournament
@@ -114,8 +118,7 @@ try {
     } elseif ($team_1_metric < $team_2_metric) {
       $points_table[$team_2_id]['wins']++;
       $points_table[$team_1_id]['losses']++;
-    } elseif ($team_1_metric == 0 && $team_2_metric == 0) {
-      // If neither team scores and match is ended, pick a random winner
+    } elseif ($team_1_metric == $team_2_metric) {
       $random_winner = rand(0, 1) == 0 ? $team_1_id : $team_2_id;
       $random_loser = $random_winner == $team_1_id ? $team_2_id : $team_1_id;
 

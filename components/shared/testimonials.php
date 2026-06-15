@@ -1,46 +1,61 @@
-<section id="testimonials" style="padding: 3rem 0; background: linear-gradient(135deg, #111, #333); color: #fff;">
+<section class="section-pad" style="background:var(--bg-primary);">
     <div class="container">
-        <div class="text-center" style="margin-bottom: 2rem;">
-            <h2 style="text-transform: uppercase; font-weight: bold; color: #f8c146;">What People Say</h2>
-            <p style="color: #aaa;">Hear from our players and fans</p>
+        <div class="section-title">
+            <div class="label">Testimonials</div>
+            <h2>What <span class="hl">People Say</span></h2>
+            <p>Hear from our players and fans</p>
         </div>
-        <div id="testimonials-carousel" class="carousel slide" data-ride="carousel">
-            <!-- Carousel Items -->
-            <div class="carousel-inner">
-                <div class="carousel-item active">
-                    <blockquote style="font-size: 1.2rem; font-style: italic; color: #ddd; text-align: center; margin: 0;">
-                        <p style="color: #fff; margin-bottom: 1.5rem;">"This league has completely transformed my perspective on sports. It's exciting, professional, and inspiring!"</p>
-                        <footer style="color: #aaa; font-size: 0.9rem;">Shourv, Player</footer>
-                    </blockquote>
-                </div>
-                <div class="carousel-item">
-                    <blockquote style="font-size: 1.2rem; font-style: italic; color: #ddd; text-align: center; margin: 0;">
-                        <p style="color: #fff; margin-bottom: 1.5rem;">"The best matches I’ve ever seen! The organization and energy are unmatched."</p>
-                        <footer style="color: #aaa; font-size: 0.9rem;">Meraj Hasan, Spectator</footer>
-                    </blockquote>
-                </div>
-                <div class="carousel-item">
-                    <blockquote style="font-size: 1.2rem; font-style: italic; color: #ddd; text-align: center; margin: 0;">
-                        <p style="color: #fff; margin-bottom: 1.5rem;">"A great opportunity to showcase young talent. Every game is a new adventure!"</p>
-                        <footer style="color: #aaa; font-size: 0.9rem;">Md. Babu, Coach</footer>
-                    </blockquote>
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div id="testimonials-carousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <div class="text-center p-5" style="background:var(--bg-card);border-radius:var(--radius-lg);border:1px solid var(--border-color);">
+                                <i class="fas fa-quote-left" style="color:var(--accent-orange);font-size:2rem;opacity:.4;"></i>
+                                <p style="color:var(--text-primary);font-size:1.2rem;font-style:italic;margin:1.5rem 0;line-height:1.7;">
+                                    "This league has completely transformed my perspective on sports. It's exciting, professional, and inspiring!"
+                                </p>
+                                <div style="width:60px;height:60px;background:var(--gradient-primary);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto .75rem;">
+                                    <i class="fas fa-user" style="color:#000;font-size:1.5rem;"></i>
+                                </div>
+                                <p style="color:var(--accent-orange);font-weight:600;margin-bottom:0;">Shourv, Player</p>
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <div class="text-center p-5" style="background:var(--bg-card);border-radius:var(--radius-lg);border:1px solid var(--border-color);">
+                                <i class="fas fa-quote-left" style="color:var(--accent-orange);font-size:2rem;opacity:.4;"></i>
+                                <p style="color:var(--text-primary);font-size:1.2rem;font-style:italic;margin:1.5rem 0;">
+                                    "The best matches I've ever seen! The organization and energy are unmatched."
+                                </p>
+                                <div style="width:60px;height:60px;background:var(--gradient-primary);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto .75rem;">
+                                    <i class="fas fa-user" style="color:#000;font-size:1.5rem;"></i>
+                                </div>
+                                <p style="color:var(--accent-orange);font-weight:600;margin-bottom:0;">Meraj Hasan, Spectator</p>
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <div class="text-center p-5" style="background:var(--bg-card);border-radius:var(--radius-lg);border:1px solid var(--border-color);">
+                                <i class="fas fa-quote-left" style="color:var(--accent-orange);font-size:2rem;opacity:.4;"></i>
+                                <p style="color:var(--text-primary);font-size:1.2rem;font-style:italic;margin:1.5rem 0;">
+                                    "A great opportunity to showcase young talent. Every game is a new adventure!"
+                                </p>
+                                <div style="width:60px;height:60px;background:var(--gradient-primary);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto .75rem;">
+                                    <i class="fas fa-user" style="color:#000;font-size:1.5rem;"></i>
+                                </div>
+                                <p style="color:var(--accent-orange);font-weight:600;margin-bottom:0;">Md. Babu, Coach</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-center gap-3 mt-4">
+                        <button type="button" data-bs-target="#testimonials-carousel" data-bs-slide="prev" style="background:var(--bg-card);border:1px solid var(--border-color);color:var(--text-primary);width:44px;height:44px;border-radius:50%;transition:all .3s;">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button type="button" data-bs-target="#testimonials-carousel" data-bs-slide="next" style="background:var(--bg-card);border:1px solid var(--border-color);color:var(--text-primary);width:44px;height:44px;border-radius:50%;transition:all .3s;">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
-            <!-- Indicators -->
-            <ol class="carousel-indicators" style="margin-top: 1rem;">
-                <li data-target="#testimonials-carousel" data-slide-to="0" class="active" style="background-color: #f8c146;"></li>
-                <li data-target="#testimonials-carousel" data-slide-to="1" style="background-color: #f8c146;"></li>
-                <li data-target="#testimonials-carousel" data-slide-to="2" style="background-color: #f8c146;"></li>
-            </ol>
-            <!-- Controls -->
-            <a class="carousel-control-prev" href="#testimonials-carousel" role="button" data-slide="prev" style="color: #fff;">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="sr-only">Previous</span>
-            </a>
-            <a class="carousel-control-next" href="#testimonials-carousel" role="button" data-slide="next" style="color: #fff;">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="sr-only">Next</span>
-            </a>
         </div>
     </div>
 </section>

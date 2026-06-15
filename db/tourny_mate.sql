@@ -28,9 +28,10 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `admin` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(30) NOT NULL,
-  `pass_key` varchar(40) NOT NULL
+  `pass_key` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -38,9 +39,7 @@ CREATE TABLE `admin` (
 --
 
 INSERT INTO `admin` (`id`, `username`, `pass_key`) VALUES
-(0, 'selim', '12345678'),
-(0, '', ''),
-(0, 'selim', '12345678');
+(1, 'selim', '$2y$10$dummyhashformigration123456789abcdefghijklmnop');
 
 -- --------------------------------------------------------
 
@@ -49,11 +48,12 @@ INSERT INTO `admin` (`id`, `username`, `pass_key`) VALUES
 --
 
 CREATE TABLE `contact` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `full_name` varchar(100) NOT NULL,
   `email` varchar(100) NOT NULL,
   `message` text NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -66,8 +66,7 @@ INSERT INTO `contact` (`id`, `full_name`, `email`, `message`, `created_at`) VALU
 (7, 'Robert Wilson', 'robert.wilson@example.com', 'How can I become a tournament official or referee?', '2025-01-24 10:37:33'),
 (8, 'Jennifer Lee', 'jennifer.lee@hotmail.com', 'Are there any youth sports programs available?', '2025-01-24 10:37:33'),
 (9, 'Christopher Martin', 'chris.martin@yahoo.com', 'I would like to sponsor an upcoming tournament. Who should I contact?', '2025-01-24 10:37:33'),
-(10, 'Amanda Garcia', 'amanda.garcia@outlook.com', 'Can you provide information about past tournament winners?', '2025-01-23 18:00:00'),
-(0, 'monser ali', 'monserali704@gmail.com', 'asdfsdfs', '2025-01-26 20:30:57');
+(10, 'Amanda Garcia', 'amanda.garcia@outlook.com', 'Can you provide information about past tournament winners?', '2025-01-23 18:00:00');
 
 -- --------------------------------------------------------
 
@@ -533,8 +532,8 @@ CREATE TABLE `tournament_team_score` (
 INSERT INTO `tournament_team_score` (`id`, `tournament_id`, `team_id`, `score`, `wickets`, `goals`, `match_id`) VALUES
 (59, 26, 15, 0, 0, 6, 12),
 (61, 26, 16, 0, 0, 2, 12),
-(64, 25, 16, 1, 0, 0, -1),
-(66, 25, 17, 4, 0, 0, -1),
+(64, 25, 16, 1, 0, 0, NULL),
+(66, 25, 17, 4, 0, 0, NULL),
 (69, 25, 15, 23, 0, 0, 11),
 (77, 26, 17, 0, 0, 1, 14);
 
@@ -719,7 +718,6 @@ ALTER TABLE `tournament_team`
 --
 ALTER TABLE `tournament_team_score`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `tournament_id` (`tournament_id`,`team_id`),
   ADD UNIQUE KEY `unique_tournament_team` (`tournament_id`,`team_id`),
   ADD KEY `team_id` (`team_id`);
 
@@ -733,6 +731,20 @@ ALTER TABLE `userinfo`
 --
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `admin`
+--
+
+ALTER TABLE `admin`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `contact`
+--
+
+ALTER TABLE `contact`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `highlights`

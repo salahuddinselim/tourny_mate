@@ -88,7 +88,8 @@ if (isset($_GET['match_id']) && is_numeric($_GET['match_id'])) {
             echo '<p class="alert alert-warning text-center">No details found for this match.</p>';
         }
     } catch (PDOException $e) {
-        echo '<p class="alert alert-danger text-center">Error fetching match details: ' . $e->getMessage() . '</p>';
+        error_log("Match details error: " . $e->getMessage());
+        echo '<p class="alert alert-danger text-center">Error fetching match details. Please try again later.</p>';
     }
 } else {
     echo '<p class="alert alert-danger text-center">Invalid match ID.</p>';

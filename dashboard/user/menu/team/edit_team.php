@@ -1,17 +1,28 @@
 <?php
+session_start();
 require_once '../../../../config.php';
+
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ../../../../login-form.php");
+    exit();
+}
+
 include '../../../../components/shared/user-header.php';
 
 $teamId = $_GET['team_id'] ?? null;
 $errors = [];
 
-// Fetch team details
 if ($teamId) {
-    $query = "SELECT name, logo FROM team WHERE id = :team_id";
+    $query = "SELECT name, logo, manager_id FROM team WHERE id = :team_id";
     $stmt = $conn->prepare($query);
     $stmt->bindParam(':team_id', $teamId, PDO::PARAM_INT);
     $stmt->execute();
     $team = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$team || $team['manager_id'] != $_SESSION['user_id']) {
+        header("Location: my_team.php?error=unauthorized");
+        exit();
+    }
 }
 
 // Handle form submission
@@ -24,29 +35,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = "Team name is required.";
     }
 
-    // Handle logo upload
     if (!empty($_FILES['logo']['name'])) {
-        $logoDir = '../../../../uploads/logos/';
-
-        if (!is_dir($logoDir)) {
-            mkdir($logoDir, 0777, true);
-        }
-        $logoFile = $logoDir . basename($_FILES['logo']['name']);
-
-        if (move_uploaded_file($_FILES['logo']['tmp_name'], $logoFile)) {
-            $logo = basename($_FILES['logo']['name']);
+        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        if (!in_array($_FILES['logo']['type'], $allowedTypes)) {
+            $errors[] = "Only JPG, PNG, GIF, and WebP images are allowed.";
+        } elseif ($_FILES['logo']['size'] > 2 * 1024 * 1024) {
+            $errors[] = "Logo must be less than 2MB.";
         } else {
-            $errors[] = "Failed to upload logo.";
+            $logoDir = '../../../../uploads/logos/';
+            if (!is_dir($logoDir)) {
+                mkdir($logoDir, 0777, true);
+            }
+            $ext = pathinfo($_FILES['logo']['name'], PATHINFO_EXTENSION);
+            $logoFile = $logoDir . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
+            if (move_uploaded_file($_FILES['logo']['tmp_name'], $logoFile)) {
+                $logo = basename($logoFile);
+            } else {
+                $errors[] = "Failed to upload logo.";
+            }
         }
     }
 
-    // Update team details
     if (empty($errors)) {
-        $query = "UPDATE team SET name = :name, logo = :logo WHERE id = :team_id";
+        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        $query = "UPDATE team SET name = :name, logo = :logo WHERE id = :team_id AND manager_id = :manager_id";
         $stmt = $conn->prepare($query);
         $stmt->bindParam(':name', $teamName);
         $stmt->bindParam(':logo', $logo);
         $stmt->bindParam(':team_id', $teamId, PDO::PARAM_INT);
+        $stmt->bindParam(':manager_id', $_SESSION['user_id'], PDO::PARAM_INT);
         $stmt->execute();
 
         header("Location: my_team.php?success=1");

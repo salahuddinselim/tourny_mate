@@ -431,7 +431,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['_method']) && $_POST[
       updatePlayerStats($conn, $matchId, $tournamentId, $playerId, $teamId, 0, true);
 
       // Optionally, update the team score if needed
-      updateTeamScore($conn, $tournamentId, $teamId, -1, 1);  // Adjust accordingly for your score system
+      updateTeamScore($conn, $tournamentId, $teamId, $matchId, 0, 1);
 
       // Fetch match and team details
       $match = fetchMatchDetails($conn, $matchId);

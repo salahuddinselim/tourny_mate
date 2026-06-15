@@ -17,7 +17,8 @@ try {
         'total_matches' => $conn->query("SELECT COUNT(*) as count FROM match_played")->fetch()['count']
     ];
 } catch (PDOException $e) {
-    $stats = ['error' => $e->getMessage()];
+    $stats = ['total_teams' => 0, 'total_tournaments' => 0, 'total_users' => 0, 'total_matches' => 0, 'error' => $e->getMessage()];
+    error_log("Admin dashboard error: " . $e->getMessage());
 }
 ?>
 <!DOCTYPE html>

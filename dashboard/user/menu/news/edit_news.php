@@ -35,10 +35,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = $_POST['title'] ?? '';
     $subtitle = $_POST['subtitle'] ?? '';
     $description = $_POST['description'] ?? '';
-    $mainImage = $_FILES['main_image']['name'] ?? $news['main_image'];
-    $image1 = $_FILES['image_1']['name'] ?? $news['image_1'];
-    $image2 = $_FILES['image_2']['name'] ?? $news['image_2'];
-    $image3 = $_FILES['image_3']['name'] ?? $news['image_3'];
+    $mainImage = (!empty($_FILES['main_image']['name'])) ? $_FILES['main_image']['name'] : $news['main_image'];
+    $image1 = (!empty($_FILES['image_1']['name'])) ? $_FILES['image_1']['name'] : $news['image_1'];
+    $image2 = (!empty($_FILES['image_2']['name'])) ? $_FILES['image_2']['name'] : $news['image_2'];
+    $image3 = (!empty($_FILES['image_3']['name'])) ? $_FILES['image_3']['name'] : $news['image_3'];
 
     if (empty($title)) {
         $errors[] = "Title is required.";

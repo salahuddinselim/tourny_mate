@@ -19,8 +19,8 @@ if (isset($_GET['fetch_live_score'])) {
                        ELSE 'Draw' 
                    END AS winner_name
             FROM match_played mp
-            LEFT JOIN tournament_team_score tts1 ON mp.team_1_id = tts1.team_id AND mp.tournament_id = tts1.tournament_id
-            LEFT JOIN tournament_team_score tts2 ON mp.team_2_id = tts2.team_id AND mp.tournament_id = tts2.tournament_id
+            LEFT JOIN tournament_team_score tts1 ON mp.team_1_id = tts1.team_id AND mp.id = tts1.match_id
+            LEFT JOIN tournament_team_score tts2 ON mp.team_2_id = tts2.team_id AND mp.id = tts2.match_id
             JOIN team t1 ON mp.team_1_id = t1.id
             JOIN team t2 ON mp.team_2_id = t2.id
             WHERE mp.match_day <= NOW() AND (mp.match_end IS NULL OR mp.match_end = 0)
@@ -43,9 +43,10 @@ if (isset($_GET['fetch_live_score'])) {
             ]);
         }
     } catch (PDOException $e) {
+        error_log("Live score error: " . $e->getMessage());
         echo json_encode([
             'success' => false,
-            'message' => 'Database error: ' . $e->getMessage()
+            'message' => 'Unable to fetch live scores.'
         ]);
     }
     exit;
@@ -169,7 +170,7 @@ if (isset($_GET['fetch_live_score'])) {
     <script>
         function fetchLiveScore() {
             const xhr = new XMLHttpRequest();
-            xhr.open('GET', '<?= $_SERVER['PHP_SELF']; ?>?fetch_live_score=true', true);
+            xhr.open('GET', 'score.php?fetch_live_score=true', true);
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4 && xhr.status === 200) {
                     const response = JSON.parse(xhr.responseText);

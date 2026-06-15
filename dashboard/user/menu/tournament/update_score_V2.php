@@ -1,5 +1,12 @@
 <?php
+session_start();
 require_once '../../../../config.php';
+
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ../../../../login-form.php");
+    exit();
+}
+
 include '../../../../components/shared/user-header.php';
 
 $matchId = $_GET['match_id'] ?? null;
@@ -35,9 +42,10 @@ $teamScoresQuery = "
            COALESCE(tts.score, 0) AS team_score
     FROM tournament_team_score tts
     JOIN team t ON tts.team_id = t.id
-    WHERE tts.tournament_id = :tournament_id";
+    WHERE tts.tournament_id = :tournament_id AND tts.match_id = :match_id";
 $stmt = $conn->prepare($teamScoresQuery);
 $stmt->bindValue(':tournament_id', $tournamentId, PDO::PARAM_INT);
+$stmt->bindValue(':match_id', $matchId, PDO::PARAM_INT);
 $stmt->execute();
 $teamScores = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -153,33 +161,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     SELECT COUNT(*) AS count
                     FROM tournament_team_score
                     WHERE tournament_id = :tournament_id 
-                      AND team_id = :team_id";
+                      AND team_id = :team_id
+                      AND match_id = :match_id2";
                 $stmt = $conn->prepare($checkTournamentScoreQuery);
                 $stmt->bindValue(':tournament_id', $tournamentId, PDO::PARAM_INT);
                 $stmt->bindValue(':team_id', $teamId, PDO::PARAM_INT);
+                $stmt->bindValue(':match_id2', $matchId, PDO::PARAM_INT);
                 $stmt->execute();
 
                 $teamRecordExists = $stmt->fetch(PDO::FETCH_ASSOC)['count'] > 0;
 
                 if ($teamRecordExists) {
-                    // Update existing team score
                     $updateTeamScoreQuery = "
                         UPDATE tournament_team_score
                         SET score = score + :runs_to_add
-                        WHERE tournament_id = :tournament_id AND team_id = :team_id";
+                        WHERE tournament_id = :tournament_id AND team_id = :team_id AND match_id = :match_id3";
                     $stmt = $conn->prepare($updateTeamScoreQuery);
                     $stmt->bindValue(':runs_to_add', $runsToAdd, PDO::PARAM_INT);
                     $stmt->bindValue(':tournament_id', $tournamentId, PDO::PARAM_INT);
                     $stmt->bindValue(':team_id', $teamId, PDO::PARAM_INT);
+                    $stmt->bindValue(':match_id3', $matchId, PDO::PARAM_INT);
                     $stmt->execute();
                 } else {
                     // Insert new team score
                     $insertTeamScoreQuery = "
-                        INSERT INTO tournament_team_score (tournament_id, team_id, score)
-                        VALUES (:tournament_id, :team_id, :runs_to_add)";
+                        INSERT INTO tournament_team_score (tournament_id, team_id, match_id, score)
+                        VALUES (:tournament_id, :team_id, :match_id4, :runs_to_add)";
                     $stmt = $conn->prepare($insertTeamScoreQuery);
                     $stmt->bindValue(':tournament_id', $tournamentId, PDO::PARAM_INT);
                     $stmt->bindValue(':team_id', $teamId, PDO::PARAM_INT);
+                    $stmt->bindValue(':match_id4', $matchId, PDO::PARAM_INT);
                     $stmt->bindValue(':runs_to_add', $runsToAdd, PDO::PARAM_INT);
                     $stmt->execute();
                 }

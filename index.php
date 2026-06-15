@@ -1,193 +1,240 @@
 <?php
-try {
-   require_once 'utils.php'; // Include the database connection
-   include './components/shared/general-header.php';
-   include './components/shared/slider.php';
-} catch (Exception $e) {
-   echo '<p>Caught exception: ' . $e->getMessage() . '</p>';
-}
+require_once 'config.php';
+include './components/shared/general-header.php';
 ?>
 
+<!-- HERO -->
+<section class="hero-battle">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="hero-grid"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="dot"></span> Season 2025 Live
+    </div>
+
+    <h1>
+      <span class="text-gold">Battle</span>
+      <span class="text-orange">Base</span>
+    </h1>
+
+    <p class="hero-sub">
+      Where champions rise. Manage tournaments, track live scores, 
+      and stay ahead of the game — all in one arena.
+    </p>
+
+    <div class="hero-actions">
+      <a href="allTournaments.php" class="btn-battle">
+        <i class="fas fa-trophy"></i> View Tournaments
+      </a>
+      <a href="register-form.php" class="btn-battle-outline">
+        <i class="fas fa-user-plus"></i> Get Started
+      </a>
+    </div>
+
+    <div class="hero-stats">
+      <div>
+        <div class="hero-stat-val">26+</div>
+        <div class="hero-stat-lbl">Tournaments</div>
+      </div>
+      <div>
+        <div class="hero-stat-val">17+</div>
+        <div class="hero-stat-lbl">Teams</div>
+      </div>
+      <div>
+        <div class="hero-stat-val">15+</div>
+        <div class="hero-stat-lbl">Matches</div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <?php
+$news = [];
+$upcoming = [];
+$err = '';
+
 try {
-   require_once 'config.php'; // Include the database connection
+  $stmt = $conn->prepare("SELECT id, title, subtitle, main_image FROM news ORDER BY created_at DESC LIMIT 3");
+  $stmt->execute();
+  $news = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-   // Fetch the latest 2 news items
-   $query = "SELECT id, title, subtitle, main_image FROM news ORDER BY created_at DESC LIMIT 2";
-   $stmt = $conn->prepare($query); // Prepare the query
-   $stmt->execute(); // Execute the query
-
-   // Fetch the results
-   $news = $stmt->fetchAll(PDO::FETCH_ASSOC); // Use PDO::FETCH_ASSOC to get an associative array
-
-   $query = "
-   SELECT mp.match_day, mp.match_type, 
-          t1.name AS team_1_name, t1.logo AS team_1_logo, 
-          t2.name AS team_2_name, t2.logo AS team_2_logo
-   FROM match_played mp
-   JOIN team t1 ON mp.team_1_id = t1.id
-   JOIN team t2 ON mp.team_2_id = t2.id
-   WHERE mp.match_day >= CURDATE()
-   ORDER BY mp.match_day ASC
-   LIMIT 4";
-   $stmt = $conn->prepare($query);
-   $stmt->execute();
-   $upcomingMatches = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  $stmt = $conn->prepare("
+    SELECT mp.match_day, mp.match_type, 
+           t1.name AS t1_name, t1.logo AS t1_logo, 
+           t2.name AS t2_name, t2.logo AS t2_logo
+    FROM match_played mp
+    JOIN team t1 ON mp.team_1_id = t1.id
+    JOIN team t2 ON mp.team_2_id = t2.id
+    WHERE mp.match_day >= CURDATE()
+    ORDER BY mp.match_day ASC LIMIT 4");
+  $stmt->execute();
+  $upcoming = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-   // Handle database-related errors
-   $error = "Error fetching news: " . $e->getMessage();
+  $err = "Unable to load data.";
+  error_log("Index: " . $e->getMessage());
 }
 ?>
 
-<section id="upcoming-match" style="padding: 3rem 0; background: linear-gradient(135deg, #f8f9fa, #eaeaea);">
-   <div class="container text-center">
-      <h2 style="text-transform: uppercase; font-weight: bold; margin-bottom: 2rem; color: #333;">Upcoming Matches</h2>
+<!-- UPCOMING MATCHES -->
+<section class="section-pad" style="background:var(--bg-secondary);">
+  <div class="container">
+    <div class="section-title">
+      <div class="label">Upcoming Battles</div>
+      <h2>Next <span class="hl">Matches</span></h2>
+      <p>Don't miss the next big game</p>
+    </div>
 
-      <?php if ($upcomingMatches): ?>
-         <div class="row">
-            <?php foreach ($upcomingMatches as $match): ?>
-               <div class="col-md-6 mb-4">
-                  <div class="shadow-lg p-4 rounded" style="background: #fff;">
-                     <div class="text-center">
-                        <!-- Team Logos and Match Info -->
-                        <div class="d-inline-block" style="position: relative; margin-right: 20px;">
-                           <img src="<?= BASE_URL . '/uploads/logos/' . htmlspecialchars($match['team_1_logo']); ?>"
-                              alt="<?= htmlspecialchars($match['team_1_name']); ?> Logo"
-                              style="width: 80px; height: 80px; object-fit: cover; border-radius: 50%; border: 3px solid #f8c146;">
-                           <p style="margin-top: 0.5rem; font-size: 1rem; font-weight: bold; color: #333;"><?= htmlspecialchars($match['team_1_name']); ?></p>
-                        </div>
-                        <span style="font-size: 1.5rem; font-weight: bold; color: #555;">VS</span>
-                        <div class="d-inline-block" style="position: relative; margin-left: 20px;">
-                           <img src="<?= BASE_URL . '/uploads/logos/' . htmlspecialchars($match['team_2_logo']); ?>"
-                              alt="<?= htmlspecialchars($match['team_2_name']); ?> Logo"
-                              style="width: 80px; height: 80px; object-fit: cover; border-radius: 50%; border: 3px solid #f8c146;">
-                           <p style="margin-top: 0.5rem; font-size: 1rem; font-weight: bold; color: #333;"><?= htmlspecialchars($match['team_2_name']); ?></p>
-                        </div>
-                     </div>
-                     <div class="text-center mt-3">
-                        <p style="font-size: 1rem; color: #555;">Match Type: <strong><?= htmlspecialchars($match['match_type']); ?></strong></p>
-                        <p style="font-size: 1rem; color: #555;">Match Day: <strong><?= htmlspecialchars($match['match_day']); ?></strong></p>
-                     </div>
-                  </div>
-               </div>
-            <?php endforeach; ?>
-         </div>
-      <?php else: ?>
-         <p style="font-size: 1.2rem; color: #555;">No upcoming matches at the moment. Stay tuned for updates!</p>
-      <?php endif; ?>
-   </div>
+    <?php if (!empty($upcoming)): ?>
+      <div class="row g-4 justify-content-center">
+        <?php foreach ($upcoming as $m): ?>
+          <div class="col-md-6 col-lg-3 reveal">
+            <div class="match-card h-100">
+              <div class="d-flex align-items-center justify-content-center gap-3">
+                <div class="text-center">
+                  <img src="uploads/logos/<?= htmlspecialchars($m['t1_logo']); ?>" alt="" class="team-logo">
+                  <p class="team-name"><?= htmlspecialchars($m['t1_name']); ?></p>
+                </div>
+                <span class="vs-badge">VS</span>
+                <div class="text-center">
+                  <img src="uploads/logos/<?= htmlspecialchars($m['t2_logo']); ?>" alt="" class="team-logo">
+                  <p class="team-name"><?= htmlspecialchars($m['t2_name']); ?></p>
+                </div>
+              </div>
+              <div class="match-meta">
+                <i class="fas fa-calendar-alt"></i>
+                <?= date('M j, g:i A', strtotime($m['match_day'])); ?>
+                <span class="mx-1">|</span>
+                <i class="fas fa-tag"></i> <?= htmlspecialchars($m['match_type']); ?>
+              </div>
+            </div>
+          </div>
+        <?php endforeach; ?>
+      </div>
+    <?php else: ?>
+      <p class="text-center" style="color:var(--text-muted);padding:3rem 0;">
+        <i class="fas fa-calendar-xmark me-2"></i>No upcoming matches scheduled.
+      </p>
+    <?php endif; ?>
+  </div>
 </section>
 
-<!-- Live Score Section -->
-<div id="live-score-container" class="fixed-bottom bg-white shadow-lg p-3 rounded">
-   <div id="live-score-content">
-      <p>Fetching live score...</p>
-   </div>
+<!-- LIVE BAR -->
+<div id="live-bar">
+  <div id="live-content">
+    <span class="live-dot"></span>
+    <span>Fetching live scores…</span>
+  </div>
 </div>
 
-<section id="news" style="padding: 3rem 0; background-color: #282521; color: #f8f9fa;">
-   <div class="container">
-      <h2 style="text-transform: uppercase; font-weight: bold; margin-bottom: 2rem; color: #f8c146;" class="text-center">Latest News</h2>
+<!-- NEWS -->
+<section class="section-pad" style="background:var(--bg-primary);">
+  <div class="container">
+    <div class="section-title">
+      <div class="label">From the Press</div>
+      <h2>Latest <span class="hl">News</span></h2>
+      <p>Stay updated with the latest sports stories</p>
+    </div>
 
-      <!-- Show error message if any -->
-      <?php if (!empty($error)): ?>
-         <div class="alert alert-danger"><?= $error; ?></div>
+    <?php if ($err): ?>
+      <div class="alert-orange"><?= htmlspecialchars($err); ?></div>
+    <?php endif; ?>
+
+    <div class="row g-4">
+      <?php if (!empty($news)): ?>
+        <?php foreach ($news as $item): ?>
+          <div class="col-md-6 col-lg-4 reveal">
+            <div class="news-card h-100">
+              <div class="img-wrap">
+                <img src="uploads/news/<?= htmlspecialchars($item['main_image']); ?>" alt="">
+              </div>
+              <div class="body">
+                <h3><?= htmlspecialchars($item['title']); ?></h3>
+                <p><?= htmlspecialchars($item['subtitle'] ?? 'Breaking news from the BattleBase arena.'); ?></p>
+                <a href="news-details.php?id=<?= $item['id']; ?>" class="read-more">
+                  Read More <i class="fas fa-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        <?php endforeach; ?>
+      <?php else: ?>
+        <div class="col-12">
+          <p class="text-center" style="color:var(--text-muted);padding:3rem 0;">No news available.</p>
+        </div>
       <?php endif; ?>
-
-      <div class="row">
-         <!-- Display news items -->
-         <?php if (!empty($news)): ?>
-            <?php foreach ($news as $item): ?>
-               <div class="col-md-6 mb-4">
-                  <div style="background-color: #333; border: 1px solid #444; border-radius: 8px; overflow: hidden; color: #f8f9fa;">
-                     <img src="./uploads/news/<?= htmlspecialchars($item['main_image']); ?>"
-                        alt="<?= htmlspecialchars($item['title']); ?>"
-                        style="width: 100%; height: auto;">
-                     <div style="padding: 1rem;">
-                        <h3 style="font-size: 1.5rem;"><?= htmlspecialchars($item['title']); ?></h3>
-                        <p style="font-size: 1rem; color: #ddd;"><?= htmlspecialchars($item['subtitle']); ?></p>
-                        <a href="news-details.php?id=<?= $item['id']; ?>"
-                           style="color: #f8c146; text-decoration: none; font-weight: bold;">Read More</a>
-                     </div>
-                  </div>
-               </div>
-            <?php endforeach; ?>
-         <?php else: ?>
-            <p style="text-align: center; width: 100%;">No news available at the moment.</p>
-         <?php endif; ?>
-      </div>
-   </div>
+    </div>
+  </div>
 </section>
 
-<section id="highlights" style="padding: 3rem 0; background: #f8f9fa;">
-   <div class="container">
-      <h2 class="text-center" style="text-transform: uppercase; font-weight: bold; margin-bottom: 2rem; color: #333;">Highlights</h2>
-      
-      <?php
-      try {
-         // Fetch the latest 6 highlights
-         $query = "SELECT id, title, video_file FROM highlights ORDER BY created_at DESC LIMIT 5";
-         $stmt = $conn->prepare($query);
-         $stmt->execute();
-         $highlights = $stmt->fetchAll(PDO::FETCH_ASSOC);
-      } catch (PDOException $e) {
-         echo '<div class="alert alert-danger">Error fetching highlights: ' . htmlspecialchars($e->getMessage()) . '</div>';
-         $highlights = [];
-      }
-      ?>
+<!-- HIGHLIGHTS -->
+<section class="section-pad" style="background:var(--bg-secondary);">
+  <div class="container">
+    <div class="section-title">
+      <div class="label">Best Moments</div>
+      <h2>Video <span class="hl">Highlights</span></h2>
+      <p>Relive the action</p>
+    </div>
 
-      <div class="row g-3">
-         <?php if (!empty($highlights)): ?>
-            <?php foreach ($highlights as $index => $highlight): ?>
-               <div class="col-md-<?= $index === 0 ? '12' : '6'; ?>"> <!-- Big first video, others smaller -->
-                  <div class="video-card" style="position: relative; overflow: hidden; border-radius: 8px;">
-                     <video 
-                        controls 
-                        style="width: 100%; height: <?= $index === 0 ? '400px' : '200px'; ?>; object-fit: cover; border-radius: 8px;">
-                        <source src="./uploads/videos/<?= htmlspecialchars($highlight['video_file']); ?>" type="video/mp4">
-                        Your browser does not support the video tag.
-                     </video>
-                     <div class="video-title text-center mt-2">
-                        <h5 style="font-size: 1.25rem; font-weight: bold; color: #333;"><?= htmlspecialchars($highlight['title']); ?></h5>
-                     </div>
-                  </div>
-               </div>
-            <?php endforeach; ?>
-         <?php else: ?>
-            <p class="text-center" style="width: 100%; font-size: 1.2rem; color: #555;">No highlights available at the moment. Check back later!</p>
-         <?php endif; ?>
-      </div>
-   </div>
+    <?php
+    try {
+      $stmt = $conn->prepare("SELECT id, title, video_file FROM highlights ORDER BY created_at DESC LIMIT 4");
+      $stmt->execute();
+      $highlights = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+      $highlights = [];
+    }
+    ?>
+
+    <div class="row g-4">
+      <?php if (!empty($highlights)): ?>
+        <?php foreach ($highlights as $h): ?>
+          <div class="col-md-6 col-lg-3 reveal">
+            <a href="view_highlight.php?highlight_id=<?= $h['id']; ?>" class="text-decoration-none">
+              <div class="video-card">
+                <video preload="metadata" style="height:200px;object-fit:cover;">
+                  <source src="uploads/videos/<?= htmlspecialchars($h['video_file']); ?>" type="video/mp4">
+                </video>
+                <div class="caption">
+                  <span><?= htmlspecialchars($h['title']); ?></span>
+                  <div class="video-play"><i class="fas fa-play" style="font-size:.75rem;"></i></div>
+                </div>
+              </div>
+            </a>
+          </div>
+        <?php endforeach; ?>
+      <?php else: ?>
+        <div class="col-12"><p class="text-center" style="color:var(--text-muted);padding:3rem 0;">No highlights available.</p></div>
+      <?php endif; ?>
+    </div>
+  </div>
 </section>
-
 
 <script>
-   // Fetch Live Score Every 10 Seconds
-   function fetchLiveScore() {
-      const xhr = new XMLHttpRequest();
-      xhr.open('GET', 'fetch_live_score.php', true); // Point to the backend script for live score
-      xhr.onload = function() {
-         if (xhr.status === 200) {
-            document.getElementById('live-score-content').innerHTML = xhr.responseText;
-         }
-      };
-      xhr.send();
-   }
+function reveal() {
+  const els = document.querySelectorAll('.reveal');
+  const h = window.innerHeight;
+  els.forEach(e => { if (e.getBoundingClientRect().top < h - 80) e.classList.add('show'); });
+}
+window.addEventListener('scroll', reveal);
+window.addEventListener('load', () => reveal());
 
-   // Run fetchLiveScore every 10 seconds
-   setInterval(fetchLiveScore, 10000);
-   fetchLiveScore(); // Initial call
+function fetchLive() {
+  var x = new XMLHttpRequest();
+  x.open('GET', 'fetch_live_score.php', true);
+  x.onload = function() { if (x.status === 200) document.getElementById('live-content').innerHTML = x.responseText; };
+  x.send();
+}
+setInterval(fetchLive, 10000);
+fetchLive();
 </script>
 
 <?php
-try {
-   include './components/shared/about.php';
-   include './components/shared/testimonials.php';
-   include './components/shared/team.php';
-   include './components/shared/contact.php';
-   include './components/shared/general-footer.php';
-} catch (Exception $e) {
-   echo '<p>Caught exception: ' . $e->getMessage() . '</p>';
-}
+include './components/shared/about.php';
+include './components/shared/testimonials.php';
+include './components/shared/team.php';
+include './components/shared/contact.php';
+include './components/shared/general-footer.php';
 ?>

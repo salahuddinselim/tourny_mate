@@ -152,7 +152,7 @@ try {
 <script>
    function refreshLiveScore() {
       const xhr = new XMLHttpRequest();
-      xhr.open('GET', '<?= $_SERVER['PHP_SELF']; ?>', true); // Reload the current page
+      xhr.open('GET', 'fetch_live_score.php', true);
       xhr.onload = function () {
          if (xhr.status === 200) {
             const parser = new DOMParser();

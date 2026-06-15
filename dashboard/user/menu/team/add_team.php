@@ -2,9 +2,9 @@
 require_once '../../../../config.php'; // Include the database configuration
 include '../../../../components/shared/user-header.php'; // Include the header
 
-// Initialize variables
 $teamName = $logo = "";
 $errors = [];
+$userIds = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['team_name'])) {
     // Get the form data
@@ -21,20 +21,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['team_name'])) {
         $errors[] = "At least one user must be selected.";
     }
 
-    // Handle file upload for the logo (optional)
     if (!empty($_FILES['logo']['name'])) {
-        $logoDir = '../../../../uploads/logos/';
-
-        // Check if the directory exists; if not, create it
-        if (!is_dir($logoDir)) {
-            mkdir($logoDir, 0777, true); // Create directory with full permissions
-        }
-        $logoFile = $logoDir . basename($_FILES['logo']['name']);
-
-        if (move_uploaded_file($_FILES['logo']['tmp_name'], $logoFile)) {
-            $logo = basename($_FILES['logo']['name']);
+        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        if (!in_array($_FILES['logo']['type'], $allowedTypes)) {
+            $errors[] = "Only JPG, PNG, GIF, and WebP images are allowed.";
+        } elseif ($_FILES['logo']['size'] > 2 * 1024 * 1024) {
+            $errors[] = "Logo must be less than 2MB.";
         } else {
-            $errors[] = "Failed to upload logo.";
+            $logoDir = '../../../../uploads/logos/';
+            if (!is_dir($logoDir)) {
+                mkdir($logoDir, 0777, true);
+            }
+            $ext = pathinfo($_FILES['logo']['name'], PATHINFO_EXTENSION);
+            $logoFile = $logoDir . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
+            if (move_uploaded_file($_FILES['logo']['tmp_name'], $logoFile)) {
+                $logo = basename($logoFile);
+            } else {
+                $errors[] = "Failed to upload logo.";
+            }
         }
     }
 

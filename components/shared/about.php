@@ -1,34 +1,45 @@
-<section id="about-us" style="padding: 3rem 0; background-color: #f9f9f9;">
+<section class="section-about">
     <div class="container">
-        <div class="row align-items-center">
+        <div class="section-title">
+            <div class="label">Who We Are</div>
+            <h2>About <span class="hl">BattleBase</span></h2>
+            <p>The Ultimate Arena for Competitive Excellence</p>
+        </div>
+        <div class="row align-items-center g-5">
             <div class="col-md-6">
-                <img src="logo.jpg" 
-                     style="width: 100%; border-radius: 10px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);" 
-                     alt="BATTLE BASE: The Ultimate Arena for Competitive Excellence">
+                <img src="logo.jpg" class="w-100 rounded-3" style="box-shadow:var(--shadow-card);" alt="BattleBase">
             </div>
             <div class="col-md-6">
-                <h2 style="text-transform: uppercase; font-weight: bold; margin-bottom: 1.5rem; color: #333;">BATTLE BASE: The Ultimate Arena for Competitive Excellence</h2>
-                <p style="margin-bottom: 1rem; line-height: 1.8; color: #555;">
+                <p style="color:var(--text-secondary);line-height:1.8;font-size:1.05rem;margin-bottom:2rem;">
                     Our league has a rich history of hosting thrilling matches and fostering a passion for sportsmanship. 
                     From grassroots events to professional tournaments, we strive to create memorable experiences for players and fans alike.
                 </p>
-                <ul style="list-style-type: none; padding: 0;">
-                    <li style="margin-bottom: 0.5rem; font-size: 1rem; font-weight: 500; color: #333;">
-                        <i class="fas fa-check" style="color: #f8c146; margin-right: 0.5rem;"></i> Easily create and manage tournaments.
-                    </li>
-                    <li style="margin-bottom: 0.5rem; font-size: 1rem; font-weight: 500; color: #333;">
-                        <i class="fas fa-check" style="color: #f8c146; margin-right: 0.5rem;"></i> Share news and updates effortlessly.
-                    </li>
-                    <li style="margin-bottom: 0.5rem; font-size: 1rem; font-weight: 500; color: #333;">
-                        <i class="fas fa-check" style="color: #f8c146; margin-right: 0.5rem;"></i> Join a vibrant community of players and fans.
-                    </li>
-                    <li style="margin-bottom: 0.5rem; font-size: 1rem; font-weight: 500; color: #333;">
-                        <i class="fas fa-check" style="color: #f8c146; margin-right: 0.5rem;"></i> Enjoy live scores and real-time updates.
-                    </li>
-                    <li style="margin-bottom: 0.5rem; font-size: 1rem; font-weight: 500; color: #333;">
-                        <i class="fas fa-check" style="color: #f8c146; margin-right: 0.5rem;"></i> Access detailed player stats and insights.
-                    </li>
-                </ul>
+                <div class="d-flex flex-column gap-3">
+                    <div class="d-flex align-items-center gap-3">
+                        <div style="width:40px;height:40px;background:rgba(242,106,46,.1);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <i class="fas fa-check" style="color:var(--accent-orange);"></i>
+                        </div>
+                        <span style="color:var(--text-primary);font-weight:500;">Easily create and manage tournaments</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-3">
+                        <div style="width:40px;height:40px;background:rgba(242,106,46,.1);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <i class="fas fa-check" style="color:var(--accent-orange);"></i>
+                        </div>
+                        <span style="color:var(--text-primary);font-weight:500;">Share news and updates effortlessly</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-3">
+                        <div style="width:40px;height:40px;background:rgba(242,106,46,.1);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <i class="fas fa-check" style="color:var(--accent-orange);"></i>
+                        </div>
+                        <span style="color:var(--text-primary);font-weight:500;">Join a vibrant community of players and fans</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-3">
+                        <div style="width:40px;height:40px;background:rgba(242,106,46,.1);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <i class="fas fa-check" style="color:var(--accent-orange);"></i>
+                        </div>
+                        <span style="color:var(--text-primary);font-weight:500;">Enjoy live scores and real-time updates</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
