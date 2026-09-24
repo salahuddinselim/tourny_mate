@@ -4,7 +4,7 @@
 
 TournyMate is a full-stack web application for running local sports tournaments. Organisers create tournaments and schedule matches, team managers register teams and players, officials update scores live, and fans follow results, points tables, news and highlights. The public site is branded **BattleBase**.
 
-It was built with PHP and MySQL as a Database Management Systems course project at United International University.
+It is a **group project**, built with PHP and MySQL for the Database Management Systems course at United International University.
 
 ![BattleBase home page](docs/screenshots/home.png)
 
@@ -124,6 +124,6 @@ tourny_mate/
 
 The public site's visual design started from a free template by [ThemeWagon](https://themewagon.com/) and was customised for BattleBase.
 
-## 👤 Author
+## 👥 Team
 
-**Salah Uddin Selim** · [Portfolio](https://salah-uddin-selim.vercel.app) · [GitHub](https://github.com/salahuddinselim)
+Built as a team for the UIU Database Management Systems course. Team member: **Salah Uddin Selim** ([GitHub](https://github.com/salahuddinselim)).
