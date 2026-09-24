@@ -126,4 +126,8 @@ The public site's visual design started from a free template by [ThemeWagon](htt
 
 ## 👥 Team
 
-Built as a team for the UIU Database Management Systems course. Team member: **Salah Uddin Selim** ([GitHub](https://github.com/salahuddinselim)).
+Built as a team for the UIU Database Management Systems course. 
+Team member: 
+**Afia Tasnim Ria** ([GitHub](https://github.com/afiatasnimria)).
+**Salah Uddin Selim** ([GitHub](https://github.com/salahuddinselim)).
+**Monirul Islam**
